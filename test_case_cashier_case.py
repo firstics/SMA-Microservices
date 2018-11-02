@@ -1,7 +1,4 @@
 import time
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import Select
 from record.models import Cashier
 from accounts.models import User
 from record.serializers import *
