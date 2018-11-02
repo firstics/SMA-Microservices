@@ -3,8 +3,6 @@ python:
   - "3.6"
 install:
   - pip install -r requirements.txt
-before_script:
-  - python manage.py runserver
 script:
   - python test_case_assign_cashier_job.py
   - python test_case_log_in.py
