@@ -4,7 +4,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 options = webdriver.ChromeOptions()
 options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-selenium = webdriver.Chrome(executable_path='/chromedriver',  chrome_options=options)
+selenium = webdriver.Chrome(executable_path='./chromedriver',  chrome_options=options)
 selenium.get('http://127.0.0.1:8000/srd_web/signin')
 
 username = selenium.find_element_by_id('username')
@@ -22,7 +22,7 @@ assert 'srd_web/index' in selenium.current_url
 logout = selenium.find_element_by_id('nav-logout')
 logout.click()
 time.sleep(1)
-assert 'srd_web/signin' in selenium.current_url
+assert 'srd_web/signin' not in selenium.current_url
 
 selenium.close()
 selenium.quit()
