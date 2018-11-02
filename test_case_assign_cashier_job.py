@@ -5,7 +5,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 options = webdriver.ChromeOptions()
 options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-selenium = webdriver.Chrome(executable_path='./chromedriver',  chrome_options=options)
+selenium = webdriver.Chrome(executable_path='/chromedriver',  chrome_options=options)
 selenium.get('http://127.0.0.1:8000/srd_web/index/2018-11-02')
 
 nav_assign = selenium.find_element_by_id('nav-assign')
