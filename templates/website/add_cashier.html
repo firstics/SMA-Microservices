@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+{% load staticfiles %} 
+{% block title %}<title>Add Cashier</title>{% endblock %}
+{% block css %} 
+<link rel="stylesheet" type="text/css" href="{% static "/css/add_cashier.css" %}" /> 
+<style>
+    .addcashier-container input{
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid lightgrey;
+        box-shadow: none;
+        border-radius: 0;
+        }
+</style>
+{% endblock %}
+{% block content %}
+
+
+<div class="container" style="padding-top:50px;padding-bottom:100px;">
+   <div class="form-group row">
+       <h2 class="display-4 form-in-line">ลงทะเบียนแคชเชียร์</h2>
+       <img class="icon" src="{% static "images/verify-icon.svg" %}" style="width:65px;height:65px;display: block; margin-left:20px;">
+   </div>
+   <hr /> 
+   <p class="dateformat"> {% now 'l, d F, Y' %} </p>
+   
+
+   <div class="container addcashier-container" style="padding-left: 200px; padding-right: 200px;paddi">
+        <form class="form-signin" action="" method="post" class="login-form">
+                <img src="{% static "images/login-logo.svg" %}" alt="login-logo" style="width:75px;height:75px;display: block;margin: 0 auto;margin-bottom:20px;">
+                <h5 class="text-center" style="padding-bottom: 20px">Please sign information</h5>
+                <hr />
+
+
+                <div class="form-group" style="padding-top: 20px">
+                    <input type="text" class="form-control" id="InputFirstname" placeholder="Firstname" required>
+                </div>
+
+                <div class="form-group" style="padding-top: 20px">
+                        <input type="text" class="form-control" id="InputLastname" placeholder="Lastname" required>
+                    </div>
+                
+                <div class="form-group" style="padding-top: 20px">
+                    <input type="text" class="form-control" id="InputUsername" placeholder="Username" required>
+                </div>
+
+                <div class="form-group" style="padding-top: 20px">
+                    <input type="email" class="form-control" id="InputEmail" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.com" placeholder="Email" required>
+                    <span class="validity"></span>
+                </div>
+
+                <div class="form-group" style="padding-top: 20px;padding-bottom: 40px">
+                    <input type="tel" class="form-control" id="InputTel" pattern="[0-9]{10}" placeholder="Tel number" required>
+                    <span class="validity"></span>
+                </div>
+        </form>
+</div>
+<hr />
+<hr />
+
+<div class='row' style="padding-right: 180px;">
+        <div class='col-sm-1 offset-sm-10' style="padding-top:15px;">
+        <button type="button" class="btn btn-primary" id="add_cashier">Add Cashier</button>
+     </div>
+        </div>
+
+        <hr />
+
+<!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+    </button> -->
+
+    <div id="dialog" style="display: none" title="Cashier was register.">
+        <p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+      </div>
+        
+{% endblock %}
+{% block javascript %}
+<script>
+   $(document).ready(function () {
+       $('#table').DataTable({
+           scrollY: 400,
+           paging: true,
+           language: {
+               search: "",
+               searchPlaceholder: " Search"
+           },
+           "bInfo" : false,
+       });
+       console.log('false');
+       $( "#dialog" ).dialog({
+            modal: true,
+            autoOpen: false,
+            title: 'Cashier was register.'
+        });
+       $("#add_cashier").click(function (){
+        var ipfirstname = $('#InputFirstname').val();
+        var iplastname = $('#InputLastname').val();
+        var ipemail = $('#InputEmail').val();
+        var iptel = $('#InputTel').val();
+        var ipusername = $('#InputUsername').val();
+        var ippassword = Math.random().toString(36).substring(8);
+        
+        console.log(ipusername,ippassword);
+        var request = $.ajax({
+                url: "/record/cashier_list",
+                method: "POST",
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify({
+                    "user":{
+                        "username": ipusername,
+                        "password": ippassword,
+                        "first_name":ipfirstname,
+                        "last_name":iplastname,
+                        "email":ipemail,
+                        "tel":iptel,
+                    }
+                }),
+            }).done(function(){
+                console.log('in');
+                var a = ("Username: "+ipusername+ "<br/>Password: "+ippassword);
+                $("#dialog").html(a);
+                $( "#dialog" ).dialog('open');
+                $('#dialog').on('closed.bs.alert', function () {
+                    location.href = "/srd_web/manage"
+                })
+                
+            })
+            .fail(function() {
+                alert("fail")
+            });
+
+        // $('.alert').alert()
+        // $( "#dialog" ).dialog();
+
+                // location.href = "/srd_web/add_cashier"
+        });
+        // $( function() {
+        //     $( "#dialog" ).dialog();
+        // } );
+        
+
+   });
+   var verify_items = [];
+   function bt_Function(item) {
+
+       var a = { state: item.value, record_id: item.name };
+       var index_items;
+       var change = "";
+       var index_change;
+
+       for (var i = 0; i < verify_items.length; i++) {
+           // console.log("for: ",i);
+           if (verify_items[i].record_id === item.name) {
+               change = "have";
+               index_change = i;
+               console.log("change: ", change);
+           }
+           // console.log(verify_items[i]);
+       }
+
+
+       if (verify_items.length === 0) {
+           verify_items.push(a);
+           index_items = verify_items.indexOf(a);
+           console.log("inside if ");
+       }
+       // else if(verify_items.includes(a))
+       else if (change === "have") {
+           // index_items = verify_items.indexOf(a);
+           verify_items[index_change] = a;
+           console.log("inside else if ");
+       }
+       else {
+           verify_items.push(a);
+           index_items = verify_items.indexOf(a);
+           console.log("inside else ");
+       }
+       // verify_items.push(a);
+
+       index_items = verify_items.indexOf(a);
+
+       console.log("index: ", index_items);
+       console.log(verify_items[index_items].state, verify_items[index_items].record_id);
+       for (var i = 0; i < verify_items.length; i++) {
+           console.log(verify_items[i]);
+       }
+   }
+   function bt_submit() {
+       var status;
+       console.log("{{manager.0.manager_id}}");
+       for (var i = 0; i < verify_items.length; i++) {
+           console.log(verify_items[i]);
+           verify_status = "declined";
+           record_status = "inarchive";
+           if (verify_items[i].state == "correct") {
+               status = "approved";
+           }
+           var request = $.ajax({
+               url: "/record/record_detail/" + String(verify_items[i].record_id),
+               method: "PATCH",
+               contentType: "application/json",
+               dataType: "json",
+               data: JSON.stringify({
+                   "verify_status": verify_status,
+                   "record_status": record_status,
+                   "verified_by": "{{manager.0.manager_id}}"
+               }),
+           }).done(function () {
+               location.reload();
+           })
+               .fail(function () {
+                   alert("fail")
+               });
+       }
+   }
+</script>
+{% endblock %}

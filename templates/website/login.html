@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+<head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    {% block css %}
+    <script src="{% static "lib/jquery.js" %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static "lib/bootstrap.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "/css/login.css" %}" />
+    {% endblock %}
+    {% block content %}
+
+    <div class="container">
+        <form class="form-signin" style="margin-bottom:10px;" action="" method="post" class="login-form">
+                <img src="{% static "images/login-logo.svg" %}" alt="login-logo" style="width:75px;height:75px;display: block;margin: 0 auto;margin-bottom:20px;">
+                <h5 class="text-center">Login to your account</h5>
+                <hr />
+                <input type="username" class="form-control" id="username" aria-describedby="Help" placeholder="Username" style="margin-bottom:10px;">
+                <input type="password" class="form-control" id="password" placeholder="Password">
+                <a  style="margin: auto;display: block;color:white;" id="submit" class="btn btn-primary" role="button" >Submit</a>
+        </form>
+    </div>
+    <!-- <footer class="footer">
+        <div class="container">
+          <span class="text-muted">Place sticky footer content here.</span>
+        </div>
+    </footer> -->
+    {% endblock %}
+    {% block javascript %}
+    <script>
+        $(document).ready(function () {
+            $("#submit").click(function() {
+            var request = $.ajax({
+                url: "/srd_web/api-login",
+                method: "POST",
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify({
+                    "username":$('#username').val(),
+                    "password":$('#password').val()
+                }),
+            }).done(function(){
+                location.href = "/srd_web/index/{% now 'Y-m-d' %}"
+            })
+            .fail(function() {
+                alert("fail")
+            });
+        });
+    });
+    </script>
+    {% endblock %}
+
+    <script src="{% static "lib/bootstrap.js" %}"></script>
+</html>

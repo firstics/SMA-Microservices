@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+{% load staticfiles %} 
+{% block title %}<title>Manage</title>{% endblock %}
+{% block content %}
+<div class="container" style="padding-top:50px;padding-bottom:100px;">
+   <div class="form-group row">
+       <h2 class="display-4 form-in-line">จัดการ</h2>
+       <img class="icon" src="{% static "images/verify-icon.svg" %}" style="width:65px;height:65px;display: block; margin-left:20px;">
+   </div>
+   <hr /> 
+   <p class="dateformat"> {% now 'l, d F, Y' %} </p>
+
+   <div class='row'>
+        <div class="col-9">
+
+    
+            <table class="table table-hover table-striped" id="table" data-height="460" style="padding-top:15px;">
+                <thead>
+                    <tr>
+                        <th> รหัสแคสเชียร์ </th>
+                        <th> ชื่อ </th>
+                        <th> ถูกสร้างเมื่อ </th>
+                        <th align="center"> แก้ไข้ </th>
+                        <th align="center"> ลบ </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cashier in cashiers %}
+                    <tr style="cursor: pointer;">
+                        <td id="c{{forloop.counter0}}"> {{ cashier.cashier_id }} </td>
+                        <td > {{ cashier.user.first_name }} {{ cashier.user.last_name }}</td>
+                        <td > {{ cashier.created_on }} </td>
+                        
+                        <td class="edit_cashier" align="center"><i class="fa fa-edit" ></i></td>
+
+                        <td class="delete_cashier" align="center"><i class="fa fa-times" ></i></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <!-- <div class='row'>
+                <div class='col-sm-1 offset-sm-10' style="padding-top:25px;">
+                    <button type="button" class="btn btn-primary" id="add_cashier">Add Cashier</button>
+                </div>
+            </div> -->
+
+        </div>
+        <div  class="col-3" style="padding-top: 60px">
+            
+            <div class="row-3" id="detail">
+                <div id="testtext">
+                    <!-- <h3  style="text-align:center; padding-top: 160px" >Cashier Details</h2>
+                    <p style="text-indent: 55px;" >It will appear in each individual when click row of cashier in the table</p> -->
+                </div>
+
+                <div id="testbt" class='row' style="visibility:hidden; position: absolute; bottom: 8px; right: 70px;">
+                    <!-- <div class="col">
+                            <button type="button" class="btn btn-primary" id="edit_cashier">Edit</button>
+                    </div> -->
+                    <!-- <div class="col"> -->
+                        <!-- <div class='col-sm-1 offset-sm-10' style="padding-top:25px;"> -->
+                            <!-- <button type="button" class="btn btn-primary" id="delete_cashier">Delete</button> -->
+                            
+                        <!-- </div> -->
+                    <!-- </div> -->
+                        
+                </div>
+
+            </div>
+
+            <!-- <div class='row' style="position: absolute; bottom: 8px; right: 170px;">
+                    <div class='col-sm-1 offset-sm-10' style="padding-top:25px;">
+                        <button type="button" class="btn btn-primary" id="add_cashier">Add Cashier</button>
+                    </div>
+                </div> -->
+            
+        </div>
+
+    </div>
+
+
+    <hr/><hr/>
+
+    <div class='row'>
+        <div class='col-sm-1 offset-sm-10' style="padding-top:25px;">
+            <button type="button" class="btn btn-primary" id="add_cashier">Add Cashier</button>
+        </div>
+    </div>
+
+    <!-- {% for cashier in cashiers %} -->
+    <!-- <div id="test1" style="visibility:hidden" >
+        <div id="test2">
+            <h5>Cashier Details</h5>
+            <hr/>
+            <p>firstname: <var id="firstname">firstname</var> </p>
+            <p>lastname: {{lastname}} </p>
+            <p>username: {{username}} </p>
+            <p>email: {{email}} </p>
+            <p>tel: {{tel}} </p>
+
+        </div>
+
+        <div id= "bt1" class='row' style="position: absolute; bottom: 8px; right: 170px;">
+            <div class='col-sm-1 offset-sm-10' style="padding-top:25px;">
+                <button type="button" class="btn btn-primary" id="add_cashier">Add Cashier</button>
+                <button type="button" class="btn btn-primary" id="add_cashier">Add Cashier</button>
+            </div>
+
+        </div>
+                
+    </div> -->
+    <!-- {% endfor %} -->
+
+</div>
+{% endblock %}
+{% block javascript %}
+<script>
+    var cashier_list = []
+    "{% for cashier in cashiers %}"
+        cashier_list.push({
+            'cashier_id':"{{cashier.cashier_id}}",
+            'user':{
+                "first_name":"{{cashier.user.first_name}}",
+                "last_name":"{{cashier.user.last_name}}",
+                "username":"{{cashier.user.username}}",
+                "email":"{{cashier.user.email}}",
+                "tel":"{{cashier.user.tel}}",
+            }
+        })
+    "{% endfor %}"
+   $(document).ready(function () {
+       var table = $('#table').DataTable({
+           scrollY: 400,
+           paging: true,
+           language: {
+               search: "",
+               searchPlaceholder: " Search"
+           },
+           "bInfo" : false,
+       });
+       var data;
+       $('#table tbody').on('click', 'tr', function () {
+            data = table.row( this ).data();
+            console.log(data[0]);
+
+            for(var i=0;i<cashier_list.length;i++){
+                if(cashier_list[i].cashier_id == data[0]){
+                    var first_name = cashier_list[i].user.first_name;
+                    var last_name = cashier_list[i].user.last_name;
+                    var username = cashier_list[i].user.username;
+                    var email = cashier_list[i].user.email;
+                    var tel = cashier_list[i].user.tel;
+
+
+                    var a = "<h5>รายละเอียดแคสเชียร์</h5><hr/><p>ชื่อ: " +first_name
+                    + "<br/><br/>นามสกุล: " + last_name 
+                    + "<br/><br/>username: " + username 
+                    + "<br/><br/>อีเมล: " + email 
+                    + "<br/><br/>เบอร์โทรศัพท์: " + tel+"</p>";
+                    ////console.log("a",a);
+                    ////console.log("var",first_name,last_name,username,password,email,tel);
+
+                    document.getElementById("testtext").innerHTML = a;
+                    // document.getElementById("test2").innerHTML = a;
+                    // document.getElementById('test2').firstname = first_name;
+                    // document.getElementById("firstname").innerHTML = first_name;
+                        
+
+                }
+            }
+            // <div id="test1"><p>test</p></div>
+                
+                $("#testbt").css({'visibility':'visible'});
+                // $("#detail").html($("#test1"));
+                // $("#test2").val.firstname = first_name;
+                // document.getElementById("vara").innerHTML = "testa";
+                // console.log(first_name);
+                
+                // $("#delete_cashier").click(function (){
+                //     console.log("delete: ",first_name,last_name);
+                // // location.href = "/srd_web/add_cashier"
+                // });
+                
+                
+        });
+        // $("#delete_cashier").click(function (){
+        //             console.log("delete: ",first_name,last_name);
+        //         // location.href = "/srd_web/add_cashier"
+        //             });
+        $(".delete_cashier").click(function (){
+            var row = table.row( $(this).parent('tr') ).data();
+            console.log("indelete",row[0])
+            var request = $.ajax({
+                url: "/record/cashier_detail/"+row[0],
+                method: "DELETE",
+            }).done(function(){
+                row.remove();
+            })
+            .fail(function() {
+                alert("fail to delete");
+            });
+        });
+        $(".edit_cashier").click(function (){
+            var row = table.row( $(this).parent('tr') ).data();
+            window.location.href = "/srd_web/edit_cashier/"+row[0]
+            // var request = $.ajax({
+            //     url: "/record/cashier_detail"+row[0],
+            //     method: "PATCH",
+            //     contentType: "application/json",
+            //     dataType: "json",
+            //     data: JSON.stringify({
+            //         "user":{
+            //             "username":,
+            //             "first_name":,
+            //             "last_name":,
+            //             "email":,
+
+            //         }
+            //     }),
+            // }).done(function(){
+            //     alert(row[1]+' edited');
+            // })
+            // .fail(function() {
+            //     alert("fail");
+            // });
+    // location.href = "/srd_web/add_cashier"
+    });
+
+       $("#add_cashier").click(function (){
+        location.href = "/srd_web/add_cashier"
+        });
+        
+
+   });
+</script>
+{% endblock %}

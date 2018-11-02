@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+{% load staticfiles %} 
+{% load humanize %}
+{% block title %}<title>Record</title> {% endblock %} 
+{% block css %}
+{% endblock %}
+{% block content %}
+<body>
+<div class="main-container p-4" style="padding-top:50px;padding-bottom:200px;">
+    <div class="form-group row">
+        <div class="headline" style="float:left;">
+        <h2 class=" form-in-line">หน้าแรก</h2>
+    </div>  
+        <img class="icon" src="{% static "images/main-icon.svg" %}" style="width:65px;height:65px;display: block; margin-left:20px;">
+        <div style="position: absolute;right: 12%;">
+                <input id="datepicker" width="180" style="width:132px;"/>
+        </div>
+
+    </div>
+    <hr />
+    <table class="table-hover dt-body-center" id="table" data-height="460" style="padding-top:15px;text-align:center" align="center">
+        <thead>
+            <tr>
+                <th data-field="store_name"> ร้านค้า </th>
+                <th data-field="record_amount"> ยอดเงินทั้งหมดของวันนี้ </th>
+                <th data-field="collected_amount"> จำนวนเงินสด </th>
+                <th data-field="record_status"> สถานะการเก็บ </th>
+                <th data-field="verify_status"> สถานะการตรวจสอบ </th>
+                <th data-field="cashier"> แคชเชียร์ </th>
+                <th data-field="collect_date"> เวลาเก็บ </th>
+                <th data-field="created_on"> เวลา </th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for record in records %}
+        <tr>
+            <td class="tcol store-name" id="{{forloop.counter0}}" name="{{ record.store.store_name }}"> {{ record.store.store_name }}</td>
+            <td class="tcol amount" id="a{{forloop.counter0}}"> {{ record.record_amount|floatformat:2|intcomma }} </td>
+            <td class="tcol collect" id="c{{forloop.counter0}}"> {{ record.collected_amount|floatformat:2|intcomma }} </td>
+            <td class="tcol" id="r-status{{forloop.counter0}}"> {{ record.get_record_status_display }}</td>
+            <td class="tcol" id="v-status{{forloop.counter0}}"> {{ record.get_verify_status_display }}</td>
+            <td class="tcol" id="cashier{{forloop.counter0}}"> {% if record.cashier is not None %}{{ record.cashier }} {% endif %}</td>
+            <td class="tcol"> {{ record.collect_date|date:"h:i A" }} </td>
+            <td class="tcol"> {{ record.created_on|date }} </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+<!--<a class="btn btn-primary" role="button" id="export" href="{% url 'export_records_csv' %}">Export</a>-->
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript">
+    $('.export-container').hide();
+    var records = [];
+    "{% for record in records %}"
+    records.push({                
+        'record_id': '{{record.record_id}}',
+        'record_amount':'{{record.record_amount|floatformat:2|intcomma}}',
+        'collected_amount':'{{record.collected_amount|floatformat:2|intcomma}}',
+        'created_on':'{{record.created_on}}',
+        'collect_date':'{{record.collect_date|date:"h:i A"}}',
+        'record_status':'{{record.record_status}}',
+        'verify_status':'{{record.verify_status}}',
+        'store': {
+            'store_name': '{{record.store.store_name}}',
+            'store_id': '{{record.store.store_id}}',
+        }, 'cashier': {
+            'cashier_id': '{{record.cashier.cashier_id}}',
+            'user':{
+                'first_name':'{{record.cashier.user.first_name}}',
+                'last_name':'{{record.cashier.user.last_name}}'
+            }
+
+        }
+    });
+    "{% endfor %}"
+    function getRecords(store_name){
+        var store_records = [];
+        for(var i=0;i<records.length;i++){
+            if(records[i].store.store_name == store_name){
+                store_records.push(records[i]);
+            }
+        }
+        return store_records;
+    }
+    function format ( d ) {
+        // `d` is the original data object for the row
+        data = getRecords(d[0]);
+        if(data.length<=1){
+            return
+        }
+        var tb = '<table style="width:85%;text-align:center;background-color:lightgrey;" align="center">';
+        for(var i=0;i<data.length;i++){
+            tb=tb+'<tr>';
+            tb=tb+'<td>'+data[i].store.store_name+'</td>';
+            tb=tb+'<td>'+data[i].record_amount+'</td>';
+            tb=tb+'<td>'+data[i].collected_amount+'</td>';
+            tb=tb+'<td>'+data[i].record_status+'</td>';
+            tb=tb+'<td>'+data[i].verify_status+'</td>';
+            tb=tb+'<td>'+data[i].cashier.user.first_name+' '+data[i].cashier.user.last_name+'</td>';
+            tb=tb+'<td>'+data[i].collect_date+'</td>';
+            tb=tb+'<td>'+data[i].created_on+'</td>';
+            tb=tb+'</tr>';
+        }
+        tb=tb+'</table>';
+        return tb;
+    }
+    function reload_table(){
+        var stores = [];
+        var indexs = [];
+        $('#table tr').each(function(){
+            $(this).find('td.store-name').each(function(){
+                //do your stuff, you can use $(this) to get current cell
+                if(stores.indexOf(this.innerText) != -1){
+                    for(var i=0;i<stores.length;i++){
+                        if(stores[i]==this.innerText){
+                            var amount = parseInt($('td#a'+indexs[i]).text());
+                            amount+= parseInt($('td#a'+this.id).text());
+
+                            $('td#a'+indexs[i]).text(amount);
+                            var collect = parseInt($('td#c'+indexs[i]).text());
+                            collect+= parseInt($('td#c'+this.id).text());
+                            $('td#c'+indexs[i]).text(collect);
+                            $(this).parents('tr').remove()
+                            $('td#cashier'+indexs[i]).text('');
+                            $('td#r-status'+indexs[i]).text('');
+                            $('td#v-status'+indexs[i]).text('');
+                            $('td#cashier'+indexs[i]).parents('tr').addClass('chlidable');
+                        }
+                    }
+                    
+                }
+                else{
+                    stores.push(this.innerText);
+                    indexs.push(this.id);
+                }
+            })
+        });
+    }
+    $(document).ready(function () {
+        var table = $('#table').DataTable({
+            scrollY: 400,
+            paging: true,
+            language: {
+                search: "",
+                searchPlaceholder: " Search"
+            },
+            "fnDrawCallback": function( oSettings ) {
+                reload_table();
+              },
+            "bInfo" : false,
+            "bSort": false,
+        });
+        $('#table tbody').on('click', 'td.tcol', function () {
+            var tr = $(this).closest('tr');
+            var row = table.row(tr);
+            if ( row.child.isShown() ) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            }
+            else {
+                // Open this row
+                row.child( format(row.data()) ).show();
+                tr.addClass('shown');
+            }
+        } );
+        $('#datepicker').datepicker({
+            uiLibrary: 'bootstrap4',
+            format: 'yyyy-mm-dd'
+        });
+        $("#datepicker").attr("placeholder","{{get_date|date}}");
+        $('#datepicker').change(function(){
+            location.href = "/srd_web/index/"+String(this.value);
+       });
+        //$(".dateformat").html(function () {
+        //    return $(this).html().substring(0, 15);
+        //});
+    });
+</script>
+<style>
+    table.dataTable tbody tr.chlidable  {
+        /* background-color: #ffffff; */
+        cursor: pointer;
+        background-color: #e6e6e6;
+    }
+
+</style>
+{% endblock %}

@@ -1,0 +1,16 @@
+input:invalid+span:after {
+    position: absolute; 
+    /* content: '✖';
+     */
+    content: 'X';
+    padding-left: 5px;
+    color: #8b0000;
+  }
+
+input:valid + span:after {
+    position: absolute;
+    content: '✓';
+    color: #26b72b;
+    /* color: #990033; */
+    padding-left: 5px;
+}

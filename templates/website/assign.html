@@ -1,0 +1,109 @@
+{% extends "base.html" %} 
+{% block title %}<title>Assign</title>{% endblock %}
+{% load staticfiles %} 
+{% block css %} <link rel="stylesheet" type="text/css" href="{% static "/css/assign.css" %}" /> {% endblock %}
+{% block content %}
+<div class="container" style="padding-top:50px;padding-bottom:100px;">
+    <div class="form-group row">
+        <h2 class="headline form-in-line">การจัดการงาน</h2>
+        <img class="icon" src="{% static "images/assign-icon.svg" %}" style="width:65px;height:65px;display: block; margin-left:20px;">
+    </div>
+    <hr />
+    
+    <div class="card" style="padding:15px;">
+        <div class="row">
+            <div class="d-block col-2"><h4> ร้านค้า </h4></div>
+            <div class="d-block col-3"><h4> ประเภทสัญญา </h4></div>
+            <div class="d-block col-2"><h4> อีเมล </h4></div>
+            <div class="d-block col-2"><h4> เวลา </h4></div>
+            <div class="d-block col-2"><h4> แคชเชียร์ </h4></div>
+        </div>
+        {% for record in records %}
+            <hr />
+        <div class="row store-r" value="{{record.store.store_name}}" id="{{record.store.store_id}}" style="cursor:pointer;">
+            <div class="text-muted col-2">{{record.store.store_name}}</div>
+            <div class="text-muted col-3">{{record.store.contract_type}}</div>
+            <div class="text-muted col-2">{{record.store.store_email}}</div>
+            <div class="text-muted col-2">{{record.created_on|date:"h:i A"}}</div>
+            <div class="text-muted col-2">
+                <select class="form-control" id="assign-cashier">
+                    <option selected value="{{record.record_id}}" id="0"><p style="text-align:center"> - </p></option>
+                    {% for cashier in cashiers %}
+                    {% if cashier.cashier_id == record.cashier.cashier_id %}
+                    <option selected value="{{record.record_id}}" id="{{cashier.cashier_id}}">{{cashier.user.first_name}} {{cashier.user.last_name}}</option>
+                    {% else %}
+                    <option value="{{record.record_id}}" id="{{cashier.cashier_id}}">{{cashier.user.first_name}} {{cashier.user.last_name}}</option>
+                    {% endif %}
+                    {% endfor %}
+                    </select>
+                </div>
+        </div>
+        {% endfor %}
+        <hr />
+    </div>
+    
+    <div class='col-sm-1 offset-sm-10' style="padding-top:25px;">
+            <a class="btn btn-primary" style="color:white;" role="button" id="submit">Submit</a>
+        </div>
+    </div>
+</div>
+{% endblock %} 
+{% block javascript %}
+<script>
+var selected_cashiers = [];
+var selected_records = [];
+    $(document).ready(function () {
+        $( ".store-r" ).on('change', 'select', function (event) {
+            var message,
+            $select = $(event.target),
+            val     = $select.val(),
+            id = $select.find('option:selected').attr('id')
+            selected_cashiers.push(id);
+            selected_records.push(val);
+          });
+        $('#submit').on('click',function(){
+            var collector = 0;
+            for(var i=0;i<selected_cashiers.length;i++){
+                var request = $.ajax({
+                    url: "/record/record_detail/"+selected_records[i],
+                    method: "PATCH",
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: JSON.stringify({
+                        "cashier":selected_cashiers[i],
+                        "assigned_by": "{{manager.manager_id}}",
+                    }),
+                });
+
+            }
+            $(document).ajaxStop(function () {
+                window.location.href = "/srd_web/index/{% now 'Y-m-d' %}"
+            });
+            
+        });
+        $('.store-r').click(function() {
+            //var store_id = this.id;
+            //console.log('clicked');
+            //var request = $.ajax({
+            //    url: "/srd_web/api-login",
+            //    method: "GET",
+            //    contentType: "application/json",
+            //    dataType: "json",
+            //    data: JSON.stringify({
+            //        "username":$('#username').val(),
+            //        "password":$('#password').val()
+            //    }),
+            //}).done(function(){
+            //    location.href = "/srd_web/index/{% now 'Y-m-d' %}"
+            //})
+            //.fail(function() {
+            //    alert("fail")
+            //});
+            //$('.store-detail').load('/srd_web/record/store/'+store_id+' .store-detail', function() {
+            //    $(this).fadeIn();
+            //    $("html, body").animate({ scrollTop: 1000 }, "slow");
+            //  });
+});
+    });
+</script> 
+{% endblock %}

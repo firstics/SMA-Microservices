@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% load staticfiles %} 
+{% load humanize %}
+{% block title %}<title>Record</title> {% endblock %} 
+{% block css %}
+<style>
+    tr {
+        display: none;
+        vertical-align: inherit;
+        border-color: inherit;
+    }
+    .selected {
+        display: table-row;
+        background-color: #f8f8ff!important;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<body>
+<div class="p-5" style="height:300px;background-color:#f9f9f9;">
+        <div class="row mt-4 mb-4 justify-content-center">
+                <div class="col-4">
+                        <select class="form-control" id="cashier-selector">
+                             {% for cashier in cashiers %}
+                            {% if forloop.first %}
+                            <option value="default"><p style="text-align:center"> แคชเชียร์ </p></option>
+                            {% endif %}
+                                <option value="{{cashier.cashier_id}}">{{cashier.cashier_id}} -- {{cashier.user.first_name}} {{cashier.user.last_name}}</option>
+                                {% endfor %}
+                        </select>
+                </div>
+        </div>
+        <div class="row justify-content-center">
+                <div class="col-4">
+                        <select class="form-control" id="contract-selector">
+                            {% for key,value in contract_type_choices %}
+                            {% if forloop.first %}
+                            <option value="default"><p style="text-align:center"> ประเภทสัญญา </p></option>
+                            {% endif %}
+                                <option value="{{key}}">{{value}}</option>
+                                {% endfor %}
+                            </select>
+                </div>
+
+</div>
+<div class='row'>
+        <div class='col-sm-1 offset-sm-10' style="padding-top:25px;">
+        <button type="button" class="btn btn-primary submit">ยืนยัน</button>
+        </div>
+        </div>
+</div>
+<div class="main-container p-4" style="padding-bottom:200px;">
+    <hr />
+    <table class="table-hover dt-body-center" id="table" data-height="460" style="padding-top:15px;text-align:center" align="center">
+        <thead>
+            <tr>
+                <th data-field="store_name"> ร้านค้า </th>
+                <th data-field="record_amount"> ยอดเงินทั้งหมดของวันนี้ </th>
+                <th data-field="collected_amount"> จำนวนเงินสด </th>
+                <th data-field="record_status"> สถานะการเก็บ </th>
+                <th data-field="verify_status"> สถานะการตรวจสอบ </th>
+                <th data-field="cashier"> แคชเชียร์ </th>
+                <th data-field="collect_date"> เวลาเก็บ </th>
+                <th data-field="created_on"> เวลา </th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for record in records %}
+        <tr class="{{record.store.contract_type}}">
+            <td class="tcol store-name" id="{{forloop.counter0}}" name="{{ record.store.store_name }}"> {{ record.store.store_name }}</td>
+            <td class="tcol amount" id="a{{forloop.counter0}}"> {{ record.record_amount|floatformat:2|intcomma }} </td>
+            <td class="tcol collect" id="c{{forloop.counter0}}"> {{ record.collected_amount|floatformat:2|intcomma }} </td>
+            <td class="tcol" id="r-status{{forloop.counter0}}"> {{ record.get_record_status_display }}</td>
+            <td class="tcol" id="v-status{{forloop.counter0}}"> {{ record.get_verify_status_display }}</td>
+            <td class="tcol" id="cashier{{forloop.counter0}}"> {% if record.cashier is not None %}{{ record.cashier }} {% endif %}</td>
+            <td class="tcol"> {{ record.collect_date|date:"h:i A" }} </td>
+            <td class="tcol"> {{ record.created_on|date }} </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+<!--<a class="btn btn-primary" role="button" id="export" href="{% url 'export_records_csv' %}">Export</a>-->
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript">
+    $('.export-container').hide();
+    $(document).ready(function () {
+        var table = $('#table').DataTable({
+            scrollY: 400,
+            paging: true,
+            language: {
+                search: "",
+                searchPlaceholder: " Search"
+            },
+            "bInfo" : false,
+            "bSort": false,
+        });
+        $('select#contract-selector').on('change', function (e) {
+            var optionSelected = $("option:selected", this);
+            var valueSelected = this.value;
+            $('.selected').removeClass('selected');
+            if(valueSelected != "default"){
+                $('.'+valueSelected).addClass('selected');
+            }
+        });
+        $('.submit').on('click', function(){
+            var cashier = $("select#cashier-selector option:selected").val();
+            var contract = $("select#contract-selector option:selected").val();
+            if(cashier == "default" || contract == "default"){
+                alert('กรุณาเลือก แคสเชียร์ หรือ ประเภทสัญญา')
+                return
+            }
+            "{% for record in records %}"
+            if("{{record.store.contract_type}}" == contract){
+            var request = $.ajax({
+                url: "/record/record_detail/{{record.record_id}}",
+                method: "PATCH",
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify({
+                    "cashier":cashier,
+                    "assigned_by": "{{manager.manager_id}}",
+                }),
+            });
+        }
+            "{%endfor%}"
+            $(document).ajaxStop(function () {
+                window.location.href = "/srd_web/index/{% now 'Y-m-d' %}"
+            });
+        })
+    });
+</script>
+{% endblock %}

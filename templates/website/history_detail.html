@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load staticfiles %} 
+{% load humanize %}
+{% block title %}<title>History Detail</title> {% endblock %} 
+{% block content %}
+<div class="p-4" style="padding-top:50px;padding-bottom:100px;">
+    <div class="form-group row">
+        <h2 class="headline form-in-line">รายละเอียดเก็บยอด</h2>
+        <img class="icon" src="{% static "images/report-icon.svg" %}" style="width:65px;height:65px;display: block; margin-left:20px;">
+    </div>
+    <hr />
+    <table class="table-hover table-striped" id="table" data-height="460" style="padding-top:15px;">
+        <thead>
+            <tr>
+                <th data-field="store_name"> ชื่อร้านค้า</th>
+                <th data-field="record_amount"> ยอดเงินทั้งหมดของวันนี้ </th>
+                <th data-field="collected_amount"> จำนวนเงินสด </th>
+                <th data-field="record_status"> สถานะการเก็บ </th>
+                <th data-field="verify_status"> สถานะการตรวจสอบ </th>
+                <th data-field="cashier"> แคสเชียย์ </th>
+                <th data-field="created_on"> เวลา </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in records %}
+            <tr data-value="{{record.record_id}}">
+                <td> {{ record.store.store_name }}</td>
+                <td> {{ record.record_amount|floatformat:2|intcomma }} </td>
+                <td> {{ record.collected_amount|floatformat:2|intcomma }} </td>
+                <td> {{ record.get_record_status_display }}</td>
+                <td> {{ record.get_verify_status_display }}</td>
+                <td> {{ record.cashier }} </td>
+                <td class="dateformat"> {{ record.created_on|date }} </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+{% block javascript %}
+<script>
+    $(document).ready(function () {
+        var table = $('#table').DataTable({
+            scrollY: 400,
+            paging: true,
+            language: {
+                search: "",
+                searchPlaceholder: " Search"
+            },
+            "bInfo" : false,
+        });
+
+
+        $('#table tbody').on('click', 'tr', function () {
+            var data = $(this).data('value')
+            location.href = "/srd_web/unverify/record/"+data;
+        } );
+    })
+</script>
+{% endblock %}

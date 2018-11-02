@@ -1,0 +1,164 @@
+ {% extends "base.html" %}
+ {% load staticfiles %} 
+ {% load humanize %}
+ {% block title %}<title>Verify</title>{% endblock %}
+ {% block content %}
+<div class="p-4" style="padding-top:50px;padding-bottom:100px;">
+    <div class="form-group row">
+        <h2 class="headline form-in-line">ตรวจสอบการเก็บยอด</h2>
+        <img class="icon" src="{% static "images/verify-icon.svg" %}" style="width:65px;height:65px;display: block; margin-left:20px;">
+    </div>
+    <hr /> 
+    <p class="dateformat"> {% now 'l, d F, Y' %} </p>
+    <table class="table table-hover table-striped" id="table" data-height="460" style="padding-top:15px;">
+        <thead>
+            <tr>
+                <th id="store_name"> ร้านค้า </th>
+                <th id="record"> ยอดเงินทั้งหมดของวันนี้ </th>
+                <th id="collect"> จำนวนเงินสด </th>
+                <th id="cashier"> แคสเชียย์ </th>
+                <th id="verify"> ตรวจสอบ </th>
+                <th id="date"> วัน </th>
+                <th id="data"> ข้อมูลเพิ่มเติม </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in records %}
+
+            <tr>
+                <td> {{ record.store.store_name }}</td>
+
+                <td> {{record.record_amount|floatformat:2|intcomma}} </td>
+
+                <td> {{record.collected_amount|floatformat:2|intcomma}}</td>
+
+                <td> {{ record.cashier.user.first_name }} {{ record.cashier.user.last_name }}</td>
+
+                <td>
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-outline-success btn-sm">
+                            <input type="radio" style="display: none;" autocomplete="off" id="c{{forloop.counter0}}" name="{{record.record_id}}" value="correct"
+                                onchange="bt_Function(this)">Approved</button>
+                        </label>
+                        <label class="btn btn-outline-warning btn-sm">
+                            <input type="radio" style="display: none;" autocomplete="off" id="i{{forloop.counter0}}" name="{{record.record_id}}" value="incorrect"
+                                onchange="bt_Function(this)">Declined</button>
+                        </label>
+
+                    </div>
+                </td>
+                <td> {{record.created_on|date}} </td>
+                <td>
+                    <p>
+                    <a class="nav-link " data-toggle="collapse" href="#collapse{{forloop.counter0}}" role="button" aria-expanded="false" aria-controls="collapse{{forloop.counter0}}">
+                        <i class="fa fa-file-pdf-o fa-lg"></i>
+                    </a>
+                    <div class="collapse" id="collapse{{forloop.counter0}}">
+                            <div class="card card-body">
+                                {{record.note}}
+                            </div>
+                            
+                            {% for image in record.receipts.all %}
+                            <div class="receipt-btn" id="/media/{{image.file}}">
+                                <img src="/media/{{image.file}}" width="250" height="250" style="margin-top:15px;margin-bottom:15px;">
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </p>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class='row'>
+        <div class='col-sm-1 offset-sm-10' style="padding-top:25px;">
+        <button type="button" class="btn btn-primary" onclick="bt_submit()">Submit</button>
+        </div>
+        </div>
+</div>
+<div class="modal" id="receipt-modal" role="dialog" style="z-index:5000;width:100%;">
+        <div class="modal-dialog">
+                <img class="modal-content receipt-img" style="width:70vw;">
+        </div>
+    </div>
+{% endblock %}
+{% block javascript %}
+<script>
+    $(document).ready(function () {
+        $('#table').DataTable({
+            scrollY: 400,
+            paging: true,
+            language: {
+                search: "",
+                searchPlaceholder: " Search"
+            },
+            "bInfo" : false,
+            "bSort": false,
+        });
+        $('.receipt-btn').on('click', function(){
+            var src_img = this.id;
+            $('.receipt-img').attr("src",src_img);
+            $('.receipt-img').css('display','block');
+            $('#receipt-modal').modal('show');
+        })
+    });
+    var verify_items = [];
+    function bt_Function(item) {
+
+        var a = { state: item.value, record_id: item.name };
+        var index_items;
+        var change = "";
+        var index_change;
+
+        for (var i = 0; i < verify_items.length; i++) {
+            if (verify_items[i].record_id === item.name) {
+                change = "have";
+                index_change = i;
+                console.log("change: ", change);
+            }
+        }
+
+
+        if (verify_items.length === 0) {
+            verify_items.push(a);
+            index_items = verify_items.indexOf(a);
+        }
+        else if (change === "have") {
+            verify_items[index_change] = a;
+        }
+        else {
+            verify_items.push(a);
+            index_items = verify_items.indexOf(a);
+        }
+        index_items = verify_items.indexOf(a);
+    }
+    function bt_submit() {
+        for (var i = 0; i < verify_items.length; i++) {
+            var record_id = String(verify_items[i].record_id);
+            var verify_status = "declined";
+            var record_status = "inarchive";
+            if (verify_items[i].state == "correct") {
+                verify_status = "approved";
+                record_status = "archive";
+            }
+            var request = $.ajax({
+                url: "/record/record_detail/" + record_id,
+                method: "PATCH",
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify({
+                    "verify_status": verify_status,
+                    "record_status": record_status,
+                    "verified_by": "{{manager.0.manager_id}}"
+                }),
+            }).done(function () {
+                var receipt = $.ajax({
+                    url: "/record/receipt_list/" + record_id,
+                    method: "POST",
+                })
+            })
+        }
+        location.reload();
+    }
+</script>
+{% endblock %}

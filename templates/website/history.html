@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load staticfiles %} 
+{% block title %}<title>History</title> {% endblock %} 
+{% block content %}
+<div class="p-4" style="padding-top:50px;padding-bottom:100px;">
+    <div class="form-group row">
+        <h2 class="display-4 form-in-line">ประวัติการเก็บยอด</h2>
+        <img class="icon" src="{% static "images/review-icon.svg" %}" style="width:65px;height:65px;display: block; margin-left:20px;">
+    </div>
+    <hr />
+    <table class="table-hover table-striped" id="table" data-height="460" style="padding-top:15px;">
+        <thead>
+            <tr>
+                <th data-field="store_id"> เลขที่</th>
+                <th data-field="store_name"> ชื่อร้านค้า </th>
+                <th data-field="store_email"> อีเมล </th>
+                <th data-field="contract_type"> ประเภทสัญญา </th>
+                <th data-field="store_facility"> สถานที่ </th>
+                <th data-field="created_on"> วัน </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for store in stores %}
+            <tr style="cursor: pointer;">
+                <td> {{ store.store_id }} </td>
+                <td> {{ store.store_name }}</td>
+                <td> {{ store.store_email }} </td>
+                <td> {{ store.get_contract_type_display }} </td>
+                <td> {{ store.get_store_facility_display }}</td>
+                <td class="dateformat"> {{ store.created_on|date }} </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+{% block javascript %}
+<script>
+    $(document).ready(function () {
+        var table = $('#table').DataTable({
+            scrollY: 400,
+            paging: true,
+            language: {
+                search: "",
+                searchPlaceholder: " Search"
+            },
+            "bInfo" : false,
+        });
+
+        $('#table tbody').on('click', 'tr', function () {
+            var data = table.row( this ).data();
+            location.href = "/srd_web/records/store/"+data[0];
+        } );
+    })
+</script>
+{% endblock %}

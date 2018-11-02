@@ -1,0 +1,522 @@
+{% extends "base.html" %}
+{% block title %}<title>Records Detail</title> {% endblock %} 
+{% load staticfiles %} 
+{% load humanize %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static "/css/record_detail.css" %}" />
+{% endblock %} 
+{% block content %}
+<div class="p-4" style="padding-top:50px;padding-bottom:100px;">
+        {% for record in records %}
+    <div class="form-group">
+        <h2 class="headline form-in-line" style="float:left;">ข้อมูลการเก็บ</h2>
+        <img class="icon" src="{% static "images/report-icon.svg" %}" style="width:65px;height:65px; margin-left:20px;">
+        <h4 class="dateformat" style="float:right">{{ record.created_on|date }} </h4>
+
+    </div>
+    <hr />
+
+    <div class="storeName" align="center" id="detail" style="padding:20px;">
+        <h2 data-field="store_name" >{{ record.store.store_name }}</h2>
+        <hr / style="margin-top:40px;width:90%;">
+    </div>
+
+
+    <div class="form-group row info" >
+        <!-- <div class="moneyAmount"> -->
+            <div class="col-3 topic moneyAmountTXT" style="float:left;">
+                <h5>จำนวนเงิน:</h5> 
+                
+            </div>
+            <div class="col-3 moneyAmount">
+                    <input class="txtInput" type="number" value={{ record.collected_amount }} readonly id="collectAmount">
+            </div>
+        <!-- </div> -->
+
+        <div class="col-3 topic">
+            <h5>จำนวนยอด:</h5>
+        </div>
+
+        <div class="col-3">
+            <input class="txtInput" type="number" value={{ record.record_amount }} readonly id="recordAmount"> 
+
+        </div>
+
+    </div>
+    <!-- ================================================================================================ -->
+    
+    <!-- <div class="row monney" > -->
+        
+        <div class="row text_money" >
+            <h5>ยอดเงินสด ( จำนวนแบงค์ / จำนวนเหรียญ )</h5>
+        </div>
+        <div class="row money">
+
+        
+            <div class="col-5">
+                <!-- ======================= -->
+                <div class="row">
+                    <div class="col-2" style="text-align: right;">
+                        <p>1000</p>
+                    </div>
+                    <div class="col-1">
+                        <p>:</p>
+                    </div>
+                    <div class="col-3">
+                        <input class="txtInput" type="number" style="text-align: center;" value={{ record.number_of_1000 }} readonly id="number_of_1000_Amount">
+                    </div>
+                    <div class="col-1">
+                        <p>ใบ</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-2" style="text-align: right;">
+                        <p>500</p>
+                    </div>
+                    <div class="col-1">
+                        <p>:</p>
+                    </div>
+                    <div class="col-3">
+                        <input class="txtInput" type="number" style="text-align: center;" value={{ record.number_of_500 }} readonly id="number_of_500_Amount">
+                    </div>
+                    <div class="col-1">
+                        <p>ใบ</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-2" style="text-align: right;">
+                        <p>100</p>
+                    </div>
+                    <div class="col-1">
+                        <p>:</p>
+                    </div>
+                    <div class="col-3">
+                        <input class="txtInput" type="number" style="text-align: center;" value={{ record.number_of_100 }} readonly id="number_of_100_Amount">
+                    </div>
+                    <div class="col-1">
+                        <p>ใบ</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-2" style="text-align: right;">
+                        <p>50</p>
+                    </div>
+                    <div class="col-1">
+                        <p>:</p>
+                    </div>
+                    <div class="col-3">
+                        <input class="txtInput" type="number" style="text-align: center;" value={{ record.number_of_50 }} readonly id="number_of_50_Amount">
+                    </div>
+                    <div class="col-1">
+                        <p>ใบ</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-2" style="text-align: right;">
+                        <p>20</p>
+                    </div>
+                    <div class="col-1">
+                        <p>:</p>
+                    </div>
+                    <div class="col-3">
+                        <input class="txtInput" type="number" style="text-align: center;" value={{ record.number_of_20 }} readonly id="number_of_20_Amount">
+                    </div>
+                    <div class="col-1">
+                        <p>ใบ</p>
+                    </div>
+                </div>
+            <!-- ======================= -->
+            </div>
+            <div class="col-6">
+            <!-- ======================= -->
+            
+                <div class="row">
+                    <div class="col-2" style="text-align: right;">
+                        <p>10</p>
+                    </div>
+                    <div class="col-1">
+                        <p>:</p5>
+                    </div>
+                    <div class="col-3">
+                        <input class="txtInput" type="number" style="text-align: center;" value={{ record.number_of_10 }} readonly id="number_of_10_Amount">
+                    </div>
+                    <div class="col-1">
+                        <p>เหรียญ</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-2" style="text-align: right;">
+                        <p>5</p>
+                    </div>
+                    <div class="col-1">
+                        <p>:</p>
+                    </div>
+                    <div class="col-3">
+                        <input class="txtInput" type="number" style="text-align: center;" value={{ record.number_of_5 }} readonly id="number_of_5_Amount">
+                    </div>
+                    <div class="col-1">
+                        <p>เหรียญ</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-2" style="text-align: right;">
+                        <p>2</p>
+                    </div>
+                    <div class="col-1">
+                        <p>:</p>
+                    </div>
+                    <div class="col-3">
+                        <input class="txtInput" type="number" style="text-align: center;" value={{ record.number_of_2 }} readonly id="number_of_2_Amount">
+                    </div>
+                    <div class="col-1">
+                        <p>เหรียญ</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-2" style="text-align: right;">
+                        <p>1</p>
+                    </div>
+                    <div class="col-1">
+                        <p>:</p>
+                    </div>
+                    <div class="col-3">
+                        <input class="txtInput" type="number" style="text-align: center;" value={{ record.number_of_1 }} readonly id="number_of_1_Amount">
+                    </div>
+                    <div class="col-1">
+                        <p>เหรียญ</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-2" style="text-align: right;">
+                        <p>0.50</p>
+                    </div>
+                    <div class="col-1">
+                        <p>:</p>
+                    </div>
+                    <div class="col-3">
+                        <input class="txtInput" type="number" style="text-align: center;" value={{ record.number_of_50_satang }} readonly id="number_of_50_satang_Amount">
+                    </div>
+                    <div class="col-1">
+                        <p>เหรียญ</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-2" style="text-align: right;">
+                        <p>0.25</p>
+                    </div>
+                    <div class="col-1">
+                        <p>:</p>
+                    </div>
+                    <div class="col-3">
+                        <input class="txtInput" type="number" style="text-align: center;" value={{ record.number_of_25_satang }} readonly id="number_of_25_satang_Amount">
+                    </div>
+                    <div class="col-1">
+                        <p>เหรียญ</p>
+                    </div>
+                </div>
+            </div>
+        <!-- </div> -->
+
+    </div>
+    <!-- ==================================================================================================== -->
+    <!-- <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/> -->
+
+    <div class="form-group row info credit" >
+        <div class="col-3 topic" style="float:left;">
+            <h5>จำนวนเครดิต:</h5> 
+            
+        </div>
+        <div class="col-3">
+                <input class="txtInput" type="number" style="text-align: center;" value={{ record.credit }} readonly id="creditAmount">
+        </div>
+
+        <div class="col-3 topic">
+            <h5>จำนวนวอชเชอร์:</h5>
+        </div>
+
+        <div class="col-3">
+            <input class="txtInput" type="number" style="text-align: center;" value={{ record.voucher }} readonly id="voucherAmount"> 
+
+        </div>
+
+    </div>
+
+    <div class="row info">
+        <div class="col-3 topic" style="float:left;">
+            <h5>สถานะการเก็บ:</h5>
+
+        </div>
+        <div class="col-3">
+            <h5> {{ record.get_record_status_display }}</h5>
+
+        </div>
+
+        <div class="col-3 topic">
+            <h5>สถานะการตรวจสอบ:</h5>
+        </div>
+
+        <div class="col-3">
+            <!-- <h5> {{ record.get_verify_status_display }}</h5> -->
+            <select class="form-control" id="verify-form">
+                {% for key,value in verify_choices %}
+                {% if record.verify_status == key %}
+                <option selected value="{{key}}">{{value}}</option>
+                {% else %}
+                <option value="{{key}}">{{value}}</option>
+                {% endif %}
+                {% endfor %}
+                </select>
+
+        </div>
+
+    </div>
+
+    <div class="row info">
+        <div class="col-2 topic" style="float:left;">
+            <h5>แคสเชียร์:</h5>
+        </div>
+        <div class="col-2">
+            <h5> {{ record.cashier }}</h5>
+        </div> 
+        <div class="col-3"></div>
+        <div class="col-3"></div>
+        
+    </div>
+
+    {% endfor %}
+    <div class='col-sm-1 offset-sm-10' style="padding-top:25px;" id="unverifyDiv">
+            <button type="button" class="btn btn-warning" onclick="unverify()">Unverify</button>
+        </div>
+    <div class="row justify-content-end" style="display:none" id="saveVerify">
+        <div class="col-1">
+            <button type="button" class="btn btn-success edit" id="saveRecord">Save</button>
+        </div>
+        <div class="col-1">
+            <button type="button" class="btn btn-danger edit" id="cancelRecord">Cancel</button>
+        </div>
+    </div>
+    
+</div>
+
+{% endblock %} 
+{% block javascript %}
+<script>
+    $(document).ready(function () {
+        
+        "{% for record in records %}"
+            var test = "{{ record.store.store_id }}";
+            var contract_type = "{{ record.store.get_contract_type_display }}";
+        "{% endfor %}"
+            console.log(test);
+            console.log(contract_type);
+
+            if(contract_type !== 'จดยอด'){
+                
+                console.log("in if: ",contract_type);
+            
+            }
+            else {
+                console.log("in else: ",contract_type);
+                $(".moneyAmountTXT").remove();
+                $(".moneyAmount").remove();
+                $(".text_money").remove();
+                $(".money").remove();
+                $(".credit").remove();
+            }
+        
+        $("#saveRecord").click(function() {
+
+            console.log($(".verify-status-display").val());
+
+            if(contract_type !== 'จดยอด'){
+                
+                console.log("in if ajax: ",contract_type);
+
+
+                var recordAmount = $('#recordAmount').val();
+                var collectAmount = $('#collectAmount').val();
+
+                var creditAmount = $('#creditAmount').val();
+                var voucherAmount = $('#voucherAmount').val();
+
+                var number_of_1000_Amount = $('#number_of_1000_Amount').val();
+                var number_of_500_Amount = $('#number_of_500_Amount').val();
+                var number_of_100_Amount = $('#number_of_100_Amount').val();
+                var number_of_50_Amount = $('#number_of_50_Amount').val();
+                var number_of_20_Amount = $('#number_of_20_Amount').val();
+                var number_of_10_Amount = $('#number_of_10_Amount').val();
+                var number_of_5_Amount = $('#number_of_5_Amount').val();
+                var number_of_2_Amount = $('#number_of_2_Amount').val();
+                var number_of_1_Amount = $('#number_of_1_Amount').val();
+                var number_of_50_satang_Amount = $('#number_of_50_satang_Amount').val();
+                var number_of_25_satang_Amount = $('#number_of_25_satang_Amount').val();
+
+
+
+                // console.log("recordAmount ",recordAmount)
+                // console.log("collectAmount ",collectAmount)
+
+                // console.log("creditAmount ",creditAmount)
+                // console.log("voucherAmount ",voucherAmount)
+
+                // console.log("number_of_1000_Amount ",number_of_1000_Amount)
+                // console.log("number_of_500_Amount ",number_of_500_Amount)
+                // console.log("number_of_100_Amount ",number_of_100_Amount)
+                // console.log("number_of_50_Amount ",number_of_50_Amount)
+                // console.log("number_of_20_Amount ",number_of_20_Amount)
+                // console.log("number_of_10_Amount ",number_of_10_Amount)
+                // console.log("number_of_5_Amount ",number_of_5_Amount)
+                // console.log("number_of_2_Amount ",number_of_2_Amount)
+                // console.log("number_of_1_Amount ",number_of_1_Amount)
+                // console.log("number_of_50_satang_Amount ",number_of_50_satang_Amount)
+                // console.log("number_of_25_satang_Amount ",number_of_25_satang_Amount)
+
+                var val_1000 = number_of_1000_Amount*1000;
+                var val_500 = number_of_500_Amount*500;
+                var val_100 = number_of_100_Amount*100;
+                var val_50 = number_of_50_Amount*50;
+                var val_20 = number_of_20_Amount*20;
+                var val_10 = number_of_10_Amount*10;
+                var val_5 = number_of_5_Amount*5;
+                var val_2 = number_of_2_Amount*2;
+                var val_1 = number_of_1_Amount*1;
+                var val_050 = number_of_50_satang_Amount*(0.5);
+                var val_025 = number_of_25_satang_Amount*(0.25);
+                var all_val = val_1000 + val_500 + val_100 + val_50 + val_20 + val_10 + val_5 + val_2 + val_1 + val_050 + val_025;
+                var all_rec = all_val + parseFloat(creditAmount) + parseFloat(voucherAmount);
+
+                
+                // console.log("val_1000 ",val_1000)
+                // console.log("val_500 ",val_500)
+                // console.log("val_100 ",val_100)
+                // console.log("val_50 ",val_50)
+                // console.log("val_20 ",val_20)
+                // console.log("val_10 ",val_10)
+                // console.log("val_5 ",val_5)
+                // console.log("val_2 ",val_2)
+                // console.log("val_1 ",val_1)
+                // console.log("val_050 ",val_050)
+                // console.log("val_025 ",val_025)
+
+                // console.log("all_val ",all_val)
+                // console.log("all_rec ",all_rec)
+
+                if(collectAmount != all_val)
+                {
+                    alert("Wrong collected amount! please check your collect.")
+                }
+                else if(recordAmount != all_rec)
+                {
+                    alert("Wrong recorded amount! please check your record.")
+                }
+                else{
+                    var request = $.ajax({
+                    url: "/record/record_detail/"+"{{records.0.record_id}}",
+                    method: "PATCH",
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: JSON.stringify({
+                        "collected_amount":$('#collectAmount').val(),
+                        "record_amount":$('#recordAmount').val(),
+                        "verify_status":$( "#verify-form option:selected" ).val(),
+                        "number_of_1000":$('#number_of_1000_Amount').val(),
+                        "number_of_500":$('#number_of_500_Amount').val(),
+                        "number_of_100":$('#number_of_100_Amount').val(),
+                        "number_of_50":$('#number_of_50_Amount').val(),
+                        "number_of_20":$('#number_of_20_Amount').val(),
+                        "number_of_10":$('#number_of_10_Amount').val(),
+                        "number_of_5":$('#number_of_5_Amount').val(),
+                        "number_of_2":$('#number_of_2_Amount').val(),
+                        "number_of_1":$('#number_of_1_Amount').val(),
+                        "number_of_50_satang":$('#number_of_50_satang_Amount').val(),
+                        "number_of_25_satang":$('#number_of_25_satang_Amount').val(),
+                        "credit":$('#creditAmount').val(),
+                        "voucher":$('#voucherAmount').val(),
+                    }),
+                    error:function(e){
+                        console.log(e);
+                    }
+                }).done(function(){
+                    // $('#saveVerify').toggle();
+                    // $('#unverifyDiv').toggle();
+                    var receipt = $.ajax({
+                        url: "/record/receipt_list/" + "{{records.0.record_id}}",
+                        method: "POST",
+                    })
+                    location.reload();
+                })
+                .fail(function() {
+                    alert("Null value")
+                });
+                    }
+                
+                
+            }
+            else{
+                    console.log("in else ajax: ",contract_type);
+                    var request = $.ajax({
+                        url: "/record/record_detail/"+"{{records.0.record_id}}",
+                        method: "PATCH",
+                        contentType: "application/json",
+                        dataType: "json",
+                        data: JSON.stringify({
+                            "collected_amount":$('#collectAmount').val(),
+                            "record_amount":$('#recordAmount').val(),
+                            "verify_status":$( "#verify-form option:selected" ).val()
+                        }),
+                        error:function(e){
+                            console.log(e);
+                        }
+                    }).done(function(){
+                        // $('#saveVerify').toggle();
+                        // $('#unverifyDiv').toggle();
+                        var receipt = $.ajax({
+                            url: "/record/receipt_list/" + "{{records.0.record_id}}",
+                            method: "POST",
+                        })
+                        location.reload();
+                    }) 
+                    .fail(function() {
+                        alert("Null value")
+                    });
+                }
+
+            
+
+
+            
+        });
+
+        $("#cancelRecord").click(function(){
+            // $('.txtInput').prop('readonly', true);
+            // $('#saveVerify').toggle();
+            // $('#unverifyDiv').toggle();
+            location.reload();
+        });
+
+
+    })
+
+    function unverify() {
+        $('.txtInput').prop('readonly', false);
+        $('#unverifyDiv').toggle();
+        $('#saveVerify').toggle();
+    }
+
+    // function cancelVerify(){
+        
+    //     $('.txtInput').prop('readonly', true);
+    //     $('#saveVerify').toggle();
+    //     $('#unverifyDiv').toggle();
+    // }
+</script> 
+{% endblock %}

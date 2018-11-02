@@ -1,0 +1,38 @@
+.info{
+    height: 100px;
+}
+.text_money{
+    height: 50px;
+    margin-left: 2px;
+}
+.money{
+    height: 320px;
+}
+.storeName{
+    padding-bottom: 40px;
+}
+.txtInput{
+    border: 0;
+    font-size: 15px;
+    font-weight: 400;
+    border-bottom: 1px solid black;
+    width: 100px;
+}
+
+.topic{
+    margin-right: -80px;
+}
+.edit{
+    width: 80px;
+}
+
+.txtInput:focus{
+   outline: none;
+}
+#collectAmount{
+    text-align: center;
+    font-size: 15px;
+}
+#recordAmount{
+    text-align: center;
+}

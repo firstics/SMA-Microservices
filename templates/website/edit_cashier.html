@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block css %}
+<style>
+    .edit-profile input{
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid lightgrey;
+        box-shadow: none;
+        border-radius: 0;
+        }
+</style>
+{% endblock %}
+{% block js %}
+{% endblock %}
+{% block content %}
+<body>
+
+{% comment %} <div style="padding-left: 200px; padding-right: 200px; padding-top: 50px">
+    <h1 style="padding-bottom: 20px">แก้ไขข้อมูลแคชเชียร์</h1>
+        <hr/>
+    <div class="container" id="form-container" style="padding:40px;">
+        <div class="container card" style="padding:50px;">
+        <form id="form-content" method="post" enctype="multipart/form-data" id="formUpload"> {% csrf_token %}
+            <div class="form-group">
+                    {{ form.as_p }}
+                </div>
+        
+        <button class="btn btn-primary" type="submit" role="button">Submit</button>
+        </form>
+        </div>
+    </div>
+</div> {% endcomment %}
+
+
+
+<div class="p-4" style="padding-top:50px;padding-bottom:100px;">
+        <div class="form-group row">
+            <h2 class="display-4 form-in-line">แก้ไขข้อมูลแคชเชียร์</h2>
+            <img class="icon" src="{% static "images/verify-icon.svg" %}" style="width:65px;height:65px;display: block; margin-left:20px;">
+        </div>
+        <hr /> 
+        <p class="dateformat"> {% now 'l, d F, Y' %} </p>
+        
+     
+        <div class="p-4 card" style="padding-left: 150px; padding-right: 150px;">
+             <form class="edit-profile" action="" method="post" class="login-form">
+                     <img src="{% static "images/login-logo.svg" %}" alt="login-logo" style="width:75px;height:75px;display: block;margin: 0 auto;margin-bottom:20px;">
+                     <h5 class="text-center" style="padding-bottom: 20px">แก้ไขข้อมูล</h5>
+                     <hr />
+
+                     <div class="form-group" style="padding-top: 20px">
+                            <input type="text" class="form-control" id="InputUsername" placeholder="Username" value="{{cashier.user.username}}">
+                        </div>
+
+                        <div class="form-group" style="padding-top: 20px">
+                            <input type="text" class="form-control" id="InputFirstname" placeholder="Firstname" value="{{cashier.user.first_name}}">
+                        </div>
+        
+                        <div class="form-group" style="padding-top: 20px">
+                                <input type="text" class="form-control" id="InputLastname" placeholder="Lastname" value="{{cashier.user.last_name}}">
+                            </div>
+     
+                     <div class="form-group" style="padding-top: 20px">
+                         <input type="email" class="form-control" id="InputEmail" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.com" placeholder="Email"  value="{{cashier.user.email}}">
+                         <span class="validity"></span>
+                     </div>
+     
+                     <div class="form-group" style="padding-top: 20px;padding-bottom: 40px">
+                         <input type="tel" class="form-control" id="InputTel" pattern="[0-9]{10}" placeholder="Telephone number"  value="{{cashier.user.tel}}">
+                         <span class="validity"></span>
+                     </div>
+                     <div class='row' style="padding:15px;margin-bottom:10px;">
+                            <div class='col-sm-1 offset-sm-10' >
+                            <button type="button" class="btn btn-primary edit_cashier" id="{{cashier.cashier_id}}">Save</button>
+                         </div>
+                            </div>
+             </form>
+     </div>
+     
+             <hr />
+     
+     <!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+         <span aria-hidden="true">&times;</span>
+         </button> -->
+     
+         <div id="dialog" style="display: none" title="Cashier was register.">
+             <p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+           </div>
+</body>
+{% endblock %}
+{% block javascript %}
+<script>
+    $(document).ready(function(){
+        $('.edit_cashier').on('click',function(){
+            console.log(this.id);
+            var request = $.ajax({
+                url: "/record/cashier_detail/"+this.id,
+                method: "PATCH",
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify({
+                    "user":{
+                        "first_name":$('#InputFirstname').val(),
+                        "last_name":$('#InputLastname').val(),
+                        "email":$('#InputEmail').val(),
+                        "tel":$('#InputTel').val(),
+                        "username":$('#InputUsername').val(),
+                    }
+                }),
+            }).done(function () {
+                location.reload();
+            })
+                .fail(function () {
+                    alert("fail")
+                });
+        })
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+{% load staticfiles %} 
+<html>
+<head>
+    
+    <meta charset="utf-8">
+    <script type="text/javascript" src="{% static "lib/jquery.js" %}"></script>
+    <script type="text/javascript" src="{% static "lib/datatables.js" %}"></script>
+    <script type="text/javascript" src="{% static "lib/bootstrap.js" %}"></script>
+    <script type="text/javascript" src="{% static "lib/gijgo.js" %}"></script>
+
+    <link rel="stylesheet" type="text/css"  href="{% static "lib/datatables.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "lib/bootstrap.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "lib/datatables.css" %}">
+    <link rel="stylesheet" type="text/css"  href="{% static "lib/font-awesome-4.7.0/css/font-awesome.min.css" %}">
+    <link rel="stylesheet" type="text/css"  href="{% static "lib/gijgo.css" %}">
+    {% block css %}{% endblock %}
+    {% block style %}
+    <style>
+            html { height: 100%; }
+            footer#footer {
+                margin-top: 60px;
+                padding: 2.5rem 0;
+                color: #999;
+                text-align: center;
+                background-color: #f9f9f9;
+                border-top: .05rem solid #e5e5e5;
+            }
+    </style>
+    <style>
+            .btn-export {
+                color:#6c757d;
+                border-color: #6c757d;
+            }
+        </style>
+    {% endblock %}
+</head>
+
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark ">
+        <!-- navbar-brand-->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                        <a class="nav-link" id="nav-index" href="/srd_web/index/{% now 'Y-m-d' %}">หน้าแรก</a>
+                    </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/srd_web/group_assign" id="nav-group-assign">การจัดการงาน</a>                  
+                </li>
+                <li class="nav-item">
+                        <a class="nav-link" href="/srd_web/assign" id="nav-assign">การจัดการงานรายบุคคล</a>                  
+                    </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/srd_web/verify" id="nav-verify">ตรวจสอบ</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/srd_web/history" id="nav-history">ประวัติการเก็บยอด</a>
+                </li>
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li class="nav-item item-export">
+                    <a class="btn btn-info show-export" href="#" data-toggle="modal" data-target="#export-modal" id="hide">
+                        แปลงเอกสาร <i class="fa fa-file"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/srd_web/manage">
+                        <i class="fa fa-users fa-lg"></i>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" onclick="logout()" >Log Out</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+{% block title %}{% endblock %}
+<div class="modal fade" style="color: #999;background-color: #f9f9f9;border-radius:10px;" id="export-modal" role="dialog" style="z-index:5000;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">แปลงเอกสาร</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form style="padding:40px;"> 
+                        <label for="datepick_start"> วันเริ่ม </label>
+                        <input id="datepick_start" width="180" style="width:132px;"/>
+                        <label for="datepick_end"> วันจบ </label>
+                        <input id="datepick_end" width="180" style="width:132px;"/>
+                    </form>
+            </div>
+            <div class="modal-footer">
+                <!-- <div class="fb-login-button" style="float:left;" data-size="medium" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false"></div> -->
+                <div class="btn-group" style="padding:15px;margin-bottom:15px;" align="right" role="group" aria-label="Basic example">
+                        <button class="btn btn-export exportcsv" role="button">
+                                CSV <i class="fa fa-table"></i>
+                            </button>
+                        <button class="btn btn-export exportpdf" role="button">
+                                PDF <i class="fa fa-file-pdf"></i>
+                            </button>
+                      </div>
+            </div>
+            </div>
+        </div>
+    </div>
+{% block content %}{% endblock %}
+<div class="pre-footer">
+</div>
+<div class="export-container container" style="margin-top:200px; width:45%;margin-bottom:80px;color: #999;background-color: #f9f9f9;border-radius:10px;">
+    <div align="center">
+    <form style="padding:40px;"> 
+        <label for="datepick_start"> วันเริ่ม </label>
+        <input id="datepick_start" width="180" style="width:132px;"/>
+        <label for="datepick_end"> วันจบ </label>
+        <input id="datepick_end" width="180" style="width:132px;"/>
+        <hr />
+        <div class="btn-group" style="padding:15px;margin-bottom:15px;" align="right" role="group" aria-label="Basic example">
+                <button class="btn btn-export exportcsv" role="button">
+                        CSV <i class="fa fa-table"></i>
+                    </button>
+                <button class="btn btn-export exportpdf" role="button">
+                        PDF <i class="fa fa-file-pdf"></i>
+                    </button>
+              </div>
+    </form>
+</div>
+</div>
+<footer id="footer">
+    <p><small>Siam Retail Development Co., Ltd.
+            587, 589, 589/7-9 Ramindra Road,
+            Khannayao Bangkok 10230, Thailand.
+            T. +66 2947 5000 Fax: +66 2947 5312
+            Mobile: +66 81 812 5528
+            <a class="text-muted" href="www.fashionisland.co.th">www.fashionisland.co.th</a></small></p>
+</footer>
+<script>
+    function reload_elements(){
+        $('.export-container').hide();
+        pathName = window.location.pathname;
+        if(pathName.indexOf('index') == -1){
+            let last_path = pathName.substring(pathName.lastIndexOf('/') + 1);
+            $('.active').removeClass('active');
+            $('#nav-'+last_path).addClass('active');
+        }
+        else{
+            $('#nav-index').addClass('active');
+        }
+        
+    }
+    $(document).ready(function(){
+        reload_elements();
+        $('.show-export').on('click',function(){
+            //if(this.id == "show"){
+                //$("html, body").animate({ scrollTop: 0 }, "slow");
+                //$('.main-container').css('padding-bottom','200px');
+                //$('.export-container').fadeOut();
+                //this.id = "hide";
+                //return
+            //}
+            //$('.main-container').css('padding-bottom','600px');
+            //$('.export-container').fadeIn();
+            //$('.pre-footer').prepend($('.export-container'));
+            //$('.export-container').fadeIn();
+            $('#datepick_start').datepicker({
+                uiLibrary: 'bootstrap4',
+                format: 'yyyy-mm-dd'
+            });
+            $('#datepick_end').datepicker({
+                uiLibrary: 'bootstrap4',
+                format: 'yyyy-mm-dd'
+            });
+            //this.id = "show";
+            //$("html, body").animate({ scrollTop: 800 }, "slow");
+        })
+        var date_start = null;
+        var date_end = null;
+        $('#datepick_start').change(function(){
+            date_start = String(this.value);
+       });
+       $('#datepick_end').change(function(){
+            date_end = String(this.value);
+        });
+        $('.exportcsv').on('click',function(){
+            if(date_start == null || date_end == null){
+                return alert('date empty');
+            }
+            $.ajax({
+                url: '/srd_web/export/csv',
+                method: 'POST',
+                data: {
+                    "date_start":date_start,
+                    "date_end":date_end,
+                },
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                success: function (data) {
+                    var a = document.createElement('a');
+                    var url = window.URL.createObjectURL(data);
+                    a.href = url;
+                    a.download = 'record.csv';
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                }
+                
+            }).done(function (){
+                $("html, body").animate({ scrollTop: 0 }, "slow");
+                $('.export-container').hide();
+                this.id = "hide";
+            })
+        });
+        $('.exportpdf').on('click',function(){
+            if(date_start == null || date_end == null){
+                return alert('date empty');
+            }
+            alert('pdf');
+            window.open('/srd_web/export/pdf/'+date_start+'/'+date_end,'_blank');
+        })
+    })
+    function logout(){
+        var request = $.ajax({
+            url: "/record/logout",
+            method: "GET",
+            contentType: "application/json",
+            dataType: "json",
+        }).done(function(){
+            location.href = "/srd_web/signin"
+        })
+        .fail(function() {
+            alert("fail")
+        });
+    }
+</script>
+{% block javascript %}{% endblock %}
+</html>
