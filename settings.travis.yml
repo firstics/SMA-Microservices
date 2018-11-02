@@ -8,3 +8,8 @@ env:
 install: pip install -r requirements.txt
 script:
 - python src/manage.py test 
+deploy:
+  provider: heroku
+  api_key:
+    secure: "YOUR ENCRYPTED API KEY"
+  app: sma-microservices
