@@ -16,3 +16,5 @@ django-crontab
 gunicorn == 19.7.0
 
 xhtml2pdf
+
+selenium
