@@ -1,33 +1,45 @@
-# Assign Cashier a Job
-import time
-import os
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import Select
-options = webdriver.ChromeOptions()
-options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+# # Assign Cashier a Job
+# import time
+# import os
+# from selenium import webdriver
+# from selenium.webdriver.common.keys import Keys
+# from selenium.webdriver.support.ui import Select
+# options = webdriver.ChromeOptions()
+# options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-driver_path = os.path.join(BASE_DIR,"chromedriver")
+# BASE_DIR = os.getcwd()
+# driver_path = os.path.join(BASE_DIR,"chromedriver")
 
-print(driver_path)
-selenium = webdriver.Chrome(executable_path= driver_path,  chrome_options=options)
-selenium.get('http://127.0.0.1:8000/srd_web/index/2018-11-02')
 
-nav_assign = selenium.find_element_by_id('nav-assign')
-nav_assign.click()
-assert 'srd_web/assign' in selenium.current_url 
+# selenium = webdriver.Chrome(executable_path= driver_path,  chrome_options=options)
 
-dropdown = Select(selenium.find_element_by_class_name('f-1'))
-dropdown.select_by_visible_text("pop pongkul")
-submit = selenium.find_element_by_id('submit')
-submit.click()
+# selenium.get('http://127.0.0.1:8000/srd_web/signin')
 
-nav_assign = selenium.find_element_by_id('nav-index')
-nav_assign.click()
+# time.sleep(1)
+# username = selenium.find_element_by_id('username')
+# password = selenium.find_element_by_id('password')
+# submit = selenium.find_element_by_id('submit')
 
-cashier_name = selenium.find_element_by_id('cashier3')
-assert cashier_name.text == "pop pongkul"
+# username.send_keys('hello')
+# password.send_keys('123456')
+# submit.click()
 
-selenium.close()
-selenium.quit()
+# selenium.get('http://127.0.0.1:8000/srd_web/index/2018-11-02')
+
+# nav_assign = selenium.find_element_by_id('nav-assign')
+# nav_assign.click()
+# assert 'srd_web/assign' in selenium.current_url 
+
+# dropdown = Select(selenium.find_element_by_class_name('f-1'))
+# dropdown.select_by_visible_text("pop pongkul")
+# submit = selenium.find_element_by_id('submit')
+# submit.click()
+
+# nav_assign = selenium.find_element_by_id('nav-index')
+# nav_assign.click()
+
+# cashier_name = selenium.find_element_by_id('cashier3')
+# assert cashier_name.text == "pop pongkul"
+
+# selenium.close()
+# selenium.quit()
