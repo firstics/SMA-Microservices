@@ -4,4 +4,6 @@ python:
 install:
   - pip install -r requirements.txt
 script:
-  - print("test")
+  - python manage.py test_case_log_in.py
+  - python manage.py test_case_log_out.py
+  - python manage.py test_case_assign_cashier_job.py
