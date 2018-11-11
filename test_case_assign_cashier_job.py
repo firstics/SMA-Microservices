@@ -31,20 +31,20 @@ elem.submit()
 
 assert "Sauce" in selenium.title
 
-# # Redirect to login page
-selenium.get('http://127.0.0.1:8000/srd_web/signin')
-time.sleep(1)
-assert 'srd_web/signin' in selenium.current_url
+# # # Redirect to login page
+# selenium.get('http://127.0.0.1:8000/srd_web/signin')
+# time.sleep(1)
+# assert 'srd_web/signin' in selenium.current_url
 
-# # Find Elements to Login
-username = selenium.find_element_by_id('username')
-password = selenium.find_element_by_id('password')
-submit = selenium.find_element_by_id('submit') 
+# # # Find Elements to Login
+# username = selenium.find_element_by_id('username')
+# password = selenium.find_element_by_id('password')
+# submit = selenium.find_element_by_id('submit') 
 
-# # Fill them to fields
-username.send_keys('hello')
-password.send_keys('123456')
-submit.click()
+# # # Fill them to fields
+# username.send_keys('hello')
+# password.send_keys('123456')
+# submit.click()
 
 # # Redirect to monitor page
 selenium.get('http://127.0.0.1:8000/srd_web/index/2018-11-02')
