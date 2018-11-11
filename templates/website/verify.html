@@ -36,7 +36,7 @@
 
                 <td>
                     <div class="btn-group" data-toggle="buttons">
-                        <label class="btn btn-outline-success btn-sm">
+                        <label class="btn btn-outline-success btn-sm b-{{forloop.counter0}}">
                             <input type="radio" style="display: none;" autocomplete="off" id="c{{forloop.counter0}}" name="{{record.record_id}}" value="correct"
                                 onchange="bt_Function(this)">Approved</button>
                         </label>
@@ -72,7 +72,7 @@
     </table>
     <div class='row'>
         <div class='col-sm-1 offset-sm-10' style="padding-top:25px;">
-        <button type="button" class="btn btn-primary" onclick="bt_submit()">Submit</button>
+        <button id="submit" type="button" class="btn btn-primary" onclick="bt_submit()">Submit</button>
         </div>
         </div>
 </div>

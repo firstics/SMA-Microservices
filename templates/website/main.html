@@ -33,7 +33,7 @@
         </thead>
         <tbody>
         {% for record in records %}
-        <tr>
+        <tr id="row-{{record.store.store_name}}">
             <td class="tcol store-name" id="{{forloop.counter0}}" name="{{ record.store.store_name }}"> {{ record.store.store_name }}</td>
             <td class="tcol amount" id="a{{forloop.counter0}}"> {{ record.record_amount|floatformat:2|intcomma }} </td>
             <td class="tcol collect" id="c{{forloop.counter0}}"> {{ record.collected_amount|floatformat:2|intcomma }} </td>
@@ -61,8 +61,8 @@
         'collected_amount':'{{record.collected_amount|floatformat:2|intcomma}}',
         'created_on':'{{record.created_on}}',
         'collect_date':'{{record.collect_date|date:"h:i A"}}',
-        'record_status':'{{record.record_status}}',
-        'verify_status':'{{record.verify_status}}',
+        'record_status':'{{record.get_record_status_display}}',
+        'verify_status':'{{record.get_verify_status_display}}',
         'store': {
             'store_name': '{{record.store.store_name}}',
             'store_id': '{{record.store.store_id}}',

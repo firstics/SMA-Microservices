@@ -26,7 +26,7 @@
             <div class="text-muted col-2">{{record.store.store_email}}</div>
             <div class="text-muted col-2">{{record.created_on|date:"h:i A"}}</div>
             <div class="text-muted col-2">
-                <select class="form-control" id="assign-cashier">
+                <select class="form-control f-{{forloop.counter0}}" id="assign-cashier">
                     <option selected value="{{record.record_id}}" id="0"><p style="text-align:center"> - </p></option>
                     {% for cashier in cashiers %}
                     {% if cashier.cashier_id == record.cashier.cashier_id %}
