@@ -1,18 +1,26 @@
-# # Assign Cashier a Job Testcase
-# import time
-# import os
-# from selenium import webdriver
-# from selenium.webdriver.common.keys import Keys
-# from selenium.webdriver.support.ui import Select
+# Assign Cashier a Job Testcase
+import time
+import os
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
-# # Find Path to run Google Chrome for Test
-# options = webdriver.ChromeOptions()
-# options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-# BASE_DIR = os.getcwd()
-# driver_path = os.path.join(BASE_DIR,"chromedriver")
+desired_cap['browserstack.local'] = True
+desired_cap['browserstack.localIdentifier'] = 'Test123'
 
-# # Selenium Run Chrome Driver
-# selenium = webdriver.Chrome(executable_path= driver_path,  chrome_options=options)
+driver = webdriver.Remote(
+    command_executor='http://atichat1:ePxMZG7xrp6D8wMpCpJn@hub.browserstack.com:80/wd/hub',
+    desired_capabilities=desired_cap)
+
+driver.get("http://www.google.com")
+if not "Google" in driver.title:
+    raise Exception("Unable to load google page!")
+
+elem = driver.find_element_by_name("q")
+elem.send_keys("BrowserStack")
+elem.submit()
+print(driver.title)
+driver.quit()
 
 # # Redirect to login page
 # selenium.get('http://127.0.0.1:8000/srd_web/signin')

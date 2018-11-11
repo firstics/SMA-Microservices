@@ -8,6 +8,8 @@ addons:
     username: "atichat1"
     access_key: "ePxMZG7xrp6D8wMpCpJn"
 script:
+  - ./BrowserStackLocal --key ePxMZG7xrp6D8wMpCpJn --local-identifier Test123
+  - python test_case_assign_cashier_job.py
   - python test_case_log_in.py
   - python test_case_log_out.py
   - python test_case_assign_cashier_job.py
