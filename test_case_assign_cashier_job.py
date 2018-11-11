@@ -6,6 +6,7 @@ from os import environ
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.support.ui import Select
   
 desired_cap = {
     'platform': "Linux",
@@ -18,36 +19,23 @@ selenium = webdriver.Remote(
    command_executor='https://{}:{}@ondemand.saucelabs.com/wd/hub'.format(username, access_key),
    desired_capabilities=desired_cap)
  
-# Test driver
-selenium.get("http://www.google.com")
- 
-if "Google" not in selenium.title:
-    raise Exception("Unable to load google page!")
+# # Redirect to login page
+selenium.get('https://srd-distributed.herokuapp.com/srd_web/signin')
+time.sleep(1)
+assert 'srd_web/signin' in selenium.current_url
 
-elem = selenium.find_element_by_name("q")
-elem.send_keys("Sauce Labs")
-elem.send_keys(Keys.TAB)
-elem.submit()
+# # Find Elements to Login
+username = selenium.find_element_by_id('username')
+password = selenium.find_element_by_id('password')
+submit = selenium.find_element_by_id('submit') 
 
-assert "Sauce" in selenium.title
+# # Fill them to fields
+username.send_keys('hello')
+password.send_keys('123456')
+submit.click()
 
-# # # Redirect to login page
-# selenium.get('http://127.0.0.1:8000/srd_web/signin')
-# time.sleep(1)
-# assert 'srd_web/signin' in selenium.current_url
-
-# # # Find Elements to Login
-# username = selenium.find_element_by_id('username')
-# password = selenium.find_element_by_id('password')
-# submit = selenium.find_element_by_id('submit') 
-
-# # # Fill them to fields
-# username.send_keys('hello')
-# password.send_keys('123456')
-# submit.click()
-
-# # Redirect to monitor page
-selenium.get('http://127.0.0.1:8000/srd_web/index/2018-11-02')
+# # # Redirect to monitor page
+selenium.get('https://srd-distributed.herokuapp.com/srd_web/index/2018-11-02')
 time.sleep(1)
 assert 'srd_web/index' in selenium.current_url
 
