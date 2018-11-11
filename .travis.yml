@@ -4,9 +4,13 @@ language: python
 python:
   - "3.6"
 install:
+  - touch oclint
+  - chmod +x oclint
+  - echo "{}" > compile_commands.json
   - pip install -r requirements.txt
   - npm install --save-dev testcafe-browser-provider-saucelabs
 script: 
+  - ./oclint-json-compilation-database -v
   - python test_case_assign_cashier_job.py
   - python test_case_log_in.py
   - python test_case_log_out.py
