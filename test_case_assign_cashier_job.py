@@ -1,27 +1,13 @@
 # Assign Cashier a Job Testcase
 import time
 import os
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from os import environ
+  
+username = environ.get('SAUCE_USERNAME', None)
+access_key = environ.get('SAUCE_ACCESS_KEY', None)
+selenium_endpoint = "http://%s:%s@ondemand.saucelabs.com:80/wd/hub" % (username, access_key)
+print(selenium_endpoint)
 
-desired_cap = {}
-desired_cap['browserstack.local'] = True
-desired_cap['browserstack.localIdentifier'] = 'Test123'
-
-driver = webdriver.Remote(
-    command_executor='http://atichat1:ePxMZG7xrp6D8wMpCpJn@hub.browserstack.com:80/wd/hub',
-    desired_capabilities=desired_cap)
-
-driver.get("http://www.google.com")
-if not "Google" in driver.title:
-    raise Exception("Unable to load google page!")
-
-elem = driver.find_element_by_name("q")
-elem.send_keys("BrowserStack")
-elem.submit()
-print(driver.title)
-driver.quit()
 
 # # Redirect to login page
 # selenium.get('http://127.0.0.1:8000/srd_web/signin')

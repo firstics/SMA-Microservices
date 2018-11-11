@@ -3,12 +3,12 @@ python:
   - "3.6"
 install:
   - pip install -r requirements.txt
+  - npm install --save-dev testcafe-browser-provider-saucelabs
 addons:
   browserstack:
     username: "atichat1"
     access_key: "ePxMZG7xrp6D8wMpCpJn"
-script:
-  - ./BrowserStackLocal --key ePxMZG7xrp6D8wMpCpJn 
+script: 
   - python test_case_assign_cashier_job.py
   - python test_case_log_in.py
   - python test_case_log_out.py
