@@ -5,6 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
+desired_cap = {}
 desired_cap['browserstack.local'] = True
 desired_cap['browserstack.localIdentifier'] = 'Test123'
 
